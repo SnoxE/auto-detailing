@@ -9,5 +9,4 @@ public class AutoDetailingApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AutoDetailingApplication.class, args);
 	}
-
 }
