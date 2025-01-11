@@ -1,5 +1,7 @@
 package allegro.agh.auto_detailing.config;
 
+import allegro.agh.auto_detailing.database.user.dto.UserDto;
+import allegro.agh.auto_detailing.database.user.sql.UserSqlService;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -51,18 +53,18 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-//    @Bean
-//    public UserDetailsService user(UserSqlService userSqlService) {
-//        return (username) -> {
-//            UserDto userDto = userSqlService.getUserByEmail(username);
-//            if (userDto == null)
-//                throw new UsernameNotFoundException("email not found");
-//            return User.withUsername(userDto.email())
-//                    .password(userDto.password())
-//                    .authorities("read")
-//                    .build();
-//        };
-//    }
+    @Bean
+    public UserDetailsService user(UserSqlService userSqlService) {
+        return (username) -> {
+            UserDto userDto = userSqlService.getUserByEmail(username);
+            if (userDto == null)
+                throw new UsernameNotFoundException("email not found");
+            return User.withUsername(userDto.email())
+                    .password(userDto.password())
+                    .authorities("read")
+                    .build();
+        };
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {

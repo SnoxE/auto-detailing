@@ -1,0 +1,7 @@
+SELECT
+    PASSWORD
+FROM
+    USERS
+WHERE
+    ID = ?;
+
