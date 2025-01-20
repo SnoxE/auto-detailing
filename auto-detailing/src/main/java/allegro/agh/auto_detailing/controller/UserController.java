@@ -10,7 +10,6 @@ import allegro.agh.auto_detailing.service.CarService;
 import allegro.agh.auto_detailing.service.EmailService;
 import allegro.agh.auto_detailing.service.ReservationService;
 import allegro.agh.auto_detailing.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +21,10 @@ import java.util.Objects;
 @RequestMapping("/api/users")
 public class UserController {
 
-    @Autowired UserService userService;
-    @Autowired CarService carService;
-    @Autowired ReservationService reservationService;
-    @Autowired EmailService emailService;
+    UserService userService;
+    CarService carService;
+    ReservationService reservationService;
+    EmailService emailService;
 
     private final PasswordEncoder passwordEncoder;
 

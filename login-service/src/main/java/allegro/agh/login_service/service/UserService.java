@@ -1,8 +1,9 @@
-package allegro.agh.auto_detailing.service;
+package allegro.agh.login_service.service;
 
-import allegro.agh.auto_detailing.database.user.dto.UserDto;
-import allegro.agh.auto_detailing.database.user.sql.UserSqlService;
-import allegro.agh.auto_detailing.common.exceptions.DgAuthException;
+import allegro.agh.login_service.common.exceptions.AuthException;
+import allegro.agh.login_service.common.resource.ResourceException;
+import allegro.agh.login_service.database.user.dto.UserDto;
+import allegro.agh.login_service.database.user.sql.UserSqlService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,17 +25,17 @@ public class UserService {
             String email,
             String phoneNumber,
             String password,
-            String role) throws DgAuthException {
+            String role) throws ResourceException {
 
         Pattern pattern = Pattern.compile("^(.+)@(.+)$");
         if (email != null) {
             email = email.toLowerCase();
             if (!pattern.matcher(email).matches())
-                throw new DgAuthException("Niepoprawny format adresu email");
+                throw new AuthException("Wrong email address format");
         }
 
         Integer count = userSqlService.getCountByEmail(email);
-        if (count > 0) throw new DgAuthException("Adres email jest już w użyciu");
+        if (count > 0) throw new AuthException("Email address already in use");
 
         userSqlService.createUser(firstName, lastName, email, phoneNumber, password, role);
 
@@ -45,9 +46,9 @@ public class UserService {
         return userSqlService.getUserByEmail(email);
     }
 
-    public void changePassword(int userId, String password) {
-        userSqlService.changePassword(userId, password);
-    }
+//    public void changePassword(int userId, String password) {
+//        userSqlService.changePassword(userId, password);
+//    }
 
     public String getPasswordByUserId(int userId) {
         return userSqlService.getPasswordByUserId(userId);

@@ -13,7 +13,6 @@ import java.util.List;
 @RequestMapping("/api/services")
 public class ServicesController {
 
-    @Autowired
     ServicesService servicesService;
 
     @GetMapping()
