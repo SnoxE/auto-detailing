@@ -63,7 +63,6 @@ public class UserSqlService {
         else
             statement.setNull(++parameterIndex, JDBCType.VARCHAR.getVendorTypeNumber());
         statement.setString(++parameterIndex, email);
-        statement.setString(++parameterIndex, phoneNumber);
         statement.setString(++parameterIndex, passwordEncoder.encode(password));
         if (role != null)
             statement.setString(++parameterIndex, role.toUpperCase());

@@ -2,6 +2,7 @@ package allegro.agh.login_service.controller;
 
 import allegro.agh.login_service.common.ResponseDto;
 import allegro.agh.login_service.database.user.dto.UserDto;
+import allegro.agh.login_service.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +17,7 @@ import java.security.Principal;
 @RequestMapping("/api/users")
 public class UserController {
 
-    allegro.agh.login_service.service.UserService userService;
+    UserService userService;
 //    CarService carService;
 //    ReservationService reservationService;
 //    EmailService emailService;
@@ -27,7 +28,9 @@ public class UserController {
 //        this.passwordEncoder = passwordEncoder;
 //    }
 
-    public UserController() {
+    public UserController(UserService userService) {
+        this.userService = userService;
+        System.out.println("UserController initialized with userService: " + userService);
     }
 
     @PostMapping("/register")
