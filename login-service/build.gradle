@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.0'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id 'com.diffplug.spotless' version '6.18.0'
 }
 
 group = 'allegro.agh'
@@ -31,6 +32,21 @@ dependencies {
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+spotless {
+	java {
+		googleJavaFormat('1.17.0')
+		// If necessary, exclude certain files:
+		// targetExclude 'src/main/java/path/to/ProblematicFile.java'
+	}
+}
+
+tasks.register("goJF") {
+	group = "formatting"
+	description = "Alias for spotlessApply."
+
+	dependsOn("spotlessApply")
 }
 
 tasks.named('test') {

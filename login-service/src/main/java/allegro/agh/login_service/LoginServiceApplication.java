@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @SpringBootApplication
 public class LoginServiceApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(LoginServiceApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(LoginServiceApplication.class, args);
+  }
 }
