@@ -1,12 +1,10 @@
-package allegro.agh.login_service.database.user.sql;
+package allegro.agh.auto_detailing.database.user.sql;
 
-import allegro.agh.login_service.common.problem.AuthProblem;
-import allegro.agh.login_service.common.problem.InternalServerErrorProblem;
-import allegro.agh.login_service.database.user.dto.UserDto;
-import allegro.agh.login_service.database.user.sql.model.UserSqlRow;
+import allegro.agh.auto_detailing.database.user.dto.UserDto;
+import allegro.agh.auto_detailing.common.exceptions.DgAuthException;
+import allegro.agh.auto_detailing.database.user.sql.model.UserSqlRow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
@@ -19,23 +17,25 @@ import java.sql.JDBCType;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import static allegro.agh.login_service.common.resource.ResourceManager.readSqlQuery;
+import static allegro.agh.auto_detailing.common.resource.ResourceManager.readSqlQuery;
 
 @Service
 public class UserSqlService {
 
     private static final Logger log = LoggerFactory.getLogger(UserSqlService.class);
 
-    private static final String INSERT_INTO_USERS = readSqlQuery("sql/user/insert_into_users.sql");
+    private static final String INSERT_INTO_USERS = readSqlQuery("sql/insert/insert_into_users.sql");
     private static final String SELECT_COUNT_BY_EMAIL =
-            readSqlQuery("sql/user/select_user_count_by_email.sql");
-    private static final String SELECT_USER_BY_ID = readSqlQuery("sql/user/select_user_by_id.sql");
+            readSqlQuery("sql/select/user/select_user_count_by_email.sql");
+    private static final String SELECT_USER_BY_ID = readSqlQuery("sql/select/user/select_user_by_id.sql");
     private static final String SELECT_USER_BY_EMAIL =
-            readSqlQuery("sql/user/select_user_by_email.sql");
+            readSqlQuery("sql/select/user/select_user_by_email.sql");
     private static final String SELECT_USER_BY_EMAIL_AND_PASSWORD =
-            readSqlQuery("sql/user/select_user_by_email_and_password.sql");
+            readSqlQuery("sql/select/user/select_user_by_email_and_password.sql");
     private static final String SELECT_PASSWORD_BY_ID =
-            readSqlQuery("sql/user/select_user_password_by_id.sql");
+            readSqlQuery("sql/select/user/select_user_password_by_id.sql");
+    private static final String UPDATE_PASSWORD_BY_ID =
+            readSqlQuery("sql/update/update_user_password.sql");
 
     private final JdbcOperations jdbcOperations;
     private final PasswordEncoder passwordEncoder;
@@ -63,8 +63,8 @@ public class UserSqlService {
         else
             statement.setNull(++parameterIndex, JDBCType.VARCHAR.getVendorTypeNumber());
         statement.setString(++parameterIndex, email);
-        statement.setString(++parameterIndex, passwordEncoder.encode(password));
-//        statement.setString(++parameterIndex, phoneNumber);
+        statement.setString(++parameterIndex, phoneNumber);
+//        statement.setString(++parameterIndex, passwordEncoder.encode(password));
         if (role != null)
             statement.setString(++parameterIndex, role.toUpperCase());
         else
@@ -73,19 +73,19 @@ public class UserSqlService {
         return statement;
     }
 
-//    private PreparedStatement updatePasswordPreparedStatement(
-//            Connection connection,
-//            int userId,
-//            String password) throws SQLException {
-//        PreparedStatement statement = connection.prepareStatement(UPDATE_PASSWORD_BY_ID);
-//
-//        int parameterIndex = 0;
-//
-//        statement.setString(++parameterIndex, password);
-//        statement.setInt(++parameterIndex, userId);
-//
-//        return statement;
-//    }
+    private PreparedStatement updatePasswordPreparedStatement(
+            Connection connection,
+            int userId,
+            String password) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(UPDATE_PASSWORD_BY_ID);
+
+        int parameterIndex = 0;
+
+        statement.setString(++parameterIndex, password);
+        statement.setInt(++parameterIndex, userId);
+
+        return statement;
+    }
 
     public Integer createUser(
             String firstName,
@@ -93,7 +93,7 @@ public class UserSqlService {
             String email,
             String phoneNumber,
             String password,
-            String role) throws AuthProblem {
+            String role) throws DgAuthException {
         try {
             return jdbcOperations.update(con -> preparedInsertIntoUsersQuery(
                     con,
@@ -103,13 +103,12 @@ public class UserSqlService {
                     phoneNumber,
                     password,
                     role));
-        } catch (DataAccessException e) {
-            log.error("Unable to create user due to an unexpected error message={}", e.getMessage(), e);
-            throw new InternalServerErrorProblem();
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
 
-    public UserDto getUserByEmailAndPassword(String email, String password) throws AuthProblem {
+    public UserDto getUserByEmailAndPassword(String email, String password) throws DgAuthException {
         return jdbcOperations.queryForObject(
                 SELECT_USER_BY_EMAIL_AND_PASSWORD,
                 userRowMapper,
@@ -122,16 +121,16 @@ public class UserSqlService {
         return jdbcOperations.queryForObject(SELECT_COUNT_BY_EMAIL, Integer.class, email);
     }
 
-//    public void changePassword(int userId, String password) throws ResponseStatusException {
-//        try {
-//            jdbcOperations.update(con -> updatePasswordPreparedStatement(
-//                    con,
-//                    userId,
-//                    password));
-//        } catch (Exception e) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-//        }
-//    }
+    public void changePassword(int userId, String password) throws ResponseStatusException {
+        try {
+            jdbcOperations.update(con -> updatePasswordPreparedStatement(
+                    con,
+                    userId,
+                    password));
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
 
     public UserDto getUserById(int id) {
         return jdbcOperations.queryForObject(SELECT_USER_BY_ID, userRowMapper, id);

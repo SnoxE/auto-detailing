@@ -21,9 +21,11 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-	implementation 'org.springframework.security:spring-security-oauth2-jose'
-	implementation 'com.google.guava:guava:33.4.0-jre'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+
+	implementation 'com.google.guava:guava:33.4.0-jre'
+	implementation 'org.zalando:problem-spring-web:0.28.0'
+
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'org.postgresql:postgresql'

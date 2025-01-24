@@ -1,12 +1,12 @@
-package allegro.agh.login_service.common.exceptions;
+package allegro.agh.auto_detailing.common.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
-public class AuthException extends RuntimeException {
+public class DgAuthException extends RuntimeException {
 
-    public AuthException(String message){
+    public DgAuthException(String message){
         super(message);
     }
 }
