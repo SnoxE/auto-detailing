@@ -37,15 +37,12 @@ dependencies {
 spotless {
 	java {
 		googleJavaFormat('1.17.0')
-		// If necessary, exclude certain files:
-		// targetExclude 'src/main/java/path/to/ProblematicFile.java'
 	}
 }
 
 tasks.register("goJF") {
 	group = "formatting"
 	description = "Alias for spotlessApply."
-
 	dependsOn("spotlessApply")
 }
 

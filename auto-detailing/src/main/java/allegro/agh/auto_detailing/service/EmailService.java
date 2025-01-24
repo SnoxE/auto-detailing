@@ -8,17 +8,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EmailService {
-    @Autowired
-    private JavaMailSender emailSender;
+  @Autowired private JavaMailSender emailSender;
 
-    public static final String EMAIL_ADDRESS = "dragonglassdetailing@gmail.com";
-    public static final String COMPANY_NAME = "Dragonglass Detailing";
-    public static final String REGISTER_SUBJECT = "Witaj w Dragonglass Detailing";
+  public static final String EMAIL_ADDRESS = "dragonglassdetailing@gmail.com";
+  public static final String COMPANY_NAME = "Dragonglass Detailing";
+  public static final String REGISTER_SUBJECT = "Witaj w Dragonglass Detailing";
 
-    public void sendRegisterConfirmationEmail(UserDto userDto) {
+  public void sendRegisterConfirmationEmail(UserDto userDto) {
 
-        String emailBody = String.format(
-                """
+    String emailBody =
+        String.format(
+            """
                 Witaj %s %s,
 
                 Potwierdzenie rejestracji w %s.
@@ -27,17 +27,13 @@ public class EmailService {
 
                 Pozdrawiamy,
                 Zespół %s""",
-                userDto.firstName(),
-                userDto.lastName(),
-                COMPANY_NAME,
-                COMPANY_NAME
-        );
+            userDto.firstName(), userDto.lastName(), COMPANY_NAME, COMPANY_NAME);
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(String.format("%s <%s>", COMPANY_NAME, EMAIL_ADDRESS));
-        message.setTo(userDto.email());
-        message.setSubject(REGISTER_SUBJECT);
-        message.setText(emailBody);
-        emailSender.send(message);
-    }
+    SimpleMailMessage message = new SimpleMailMessage();
+    message.setFrom(String.format("%s <%s>", COMPANY_NAME, EMAIL_ADDRESS));
+    message.setTo(userDto.email());
+    message.setSubject(REGISTER_SUBJECT);
+    message.setText(emailBody);
+    emailSender.send(message);
+  }
 }

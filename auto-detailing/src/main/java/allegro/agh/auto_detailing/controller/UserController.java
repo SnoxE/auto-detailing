@@ -10,99 +10,97 @@ import allegro.agh.auto_detailing.service.CarService;
 import allegro.agh.auto_detailing.service.EmailService;
 import allegro.agh.auto_detailing.service.ReservationService;
 import allegro.agh.auto_detailing.service.UserService;
+import java.security.Principal;
+import java.util.Objects;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
-    UserService userService;
-    CarService carService;
-    ReservationService reservationService;
-    EmailService emailService;
+  UserService userService;
+  CarService carService;
+  ReservationService reservationService;
+  EmailService emailService;
 
-    private final PasswordEncoder passwordEncoder;
+  private final PasswordEncoder passwordEncoder;
 
-    public UserController(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
+  public UserController(PasswordEncoder passwordEncoder) {
+    this.passwordEncoder = passwordEncoder;
+  }
+
+  @PostMapping("/register")
+  public ResponseEntity<ResponseDto> registerUser(@RequestBody UserDto userDto) {
+    UserDto user =
+        userService.registerUser(
+            userDto.firstName(),
+            userDto.lastName(),
+            userDto.email(),
+            userDto.phoneNumber(),
+            userDto.password(),
+            userDto.role());
+
+    emailService.sendRegisterConfirmationEmail(userDto);
+
+    return ResponseEntity.ok().build();
+  }
+
+  @PostMapping("/{userId}/add-car")
+  public ResponseEntity<ResponseDto> addCar(
+      @PathVariable("userId") String userId, @RequestBody CarDto carDto) {
+    carService.addCar(
+        Integer.parseInt(userId),
+        carDto.make(),
+        carDto.model(),
+        carDto.productionYear(),
+        carDto.size(),
+        carDto.colour());
+
+    return ResponseEntity.ok().build();
+  }
+
+  @PutMapping("/{userId}/change-password")
+  public ResponseEntity<ResponseDto> changePassword(
+      @PathVariable("userId") String userId, @RequestBody PasswordDto passwordDto) {
+    String oldPassword = userService.getPasswordByUserId(Integer.parseInt(userId));
+    if (!Objects.equals(oldPassword, passwordEncoder.encode(passwordDto.oldPassword()))) {
+      return ResponseEntity.badRequest().build();
+    } else if (Objects.equals(oldPassword, passwordEncoder.encode(passwordDto.newPassword()))) {
+      return ResponseEntity.badRequest().build();
+    } else {
+      userService.changePassword(
+          Integer.parseInt(userId), passwordEncoder.encode(passwordDto.newPassword()));
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<ResponseDto> registerUser(@RequestBody UserDto userDto) {
-        UserDto user =
-                userService.registerUser(
-                        userDto.firstName(),
-                        userDto.lastName(),
-                        userDto.email(),
-                        userDto.phoneNumber(),
-                        userDto.password(),
-                        userDto.role());
+    return ResponseEntity.ok().build();
+  }
 
-        emailService.sendRegisterConfirmationEmail(userDto);
+  @GetMapping("/user")
+  public UserDto getLoggedUser(Principal principal) {
+    return userService.getUserByEmail(principal.getName());
+  }
 
-        return ResponseEntity.ok().build();
-    }
+  @GetMapping("/email")
+  public int getUserCountByEmail(@RequestParam("email") String email) {
+    return userService.getUserCountByEmail(email);
+  }
 
-    @PostMapping("/{userId}/add-car")
-    public ResponseEntity<ResponseDto> addCar(
-            @PathVariable("userId") String userId, @RequestBody CarDto carDto) {
-        carService.addCar(
-                Integer.parseInt(userId),
-                carDto.make(),
-                carDto.model(),
-                carDto.productionYear(),
-                carDto.size(),
-                carDto.colour());
+  @GetMapping("/{userId}/cars")
+  public ContentDto<CarDto> getUserCars(@PathVariable("userId") String userId) {
+    return carService.getUserCars(userId);
+  }
 
-        return ResponseEntity.ok().build();
-    }
+  @DeleteMapping("/{userId}/delete-car/{carId}")
+  public ResponseEntity<ResponseDto> deleteCar(
+      @PathVariable("userId") String userId, @PathVariable("carId") String carId) {
+    carService.deleteCar(Integer.parseInt(userId), Integer.parseInt(carId));
+    return ResponseEntity.ok().build();
+  }
 
-    @PutMapping("/{userId}/change-password")
-    public ResponseEntity<ResponseDto> changePassword(
-            @PathVariable("userId") String userId, @RequestBody PasswordDto passwordDto) {
-        String oldPassword = userService.getPasswordByUserId(Integer.parseInt(userId));
-        if (!Objects.equals(oldPassword, passwordEncoder.encode(passwordDto.oldPassword()))) {
-            return ResponseEntity.badRequest().build();
-        } else if (Objects.equals(oldPassword, passwordEncoder.encode(passwordDto.newPassword()))) {
-            return ResponseEntity.badRequest().build();
-        } else {
-            userService.changePassword(
-                    Integer.parseInt(userId), passwordEncoder.encode(passwordDto.newPassword()));
-        }
-
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/user")
-    public UserDto getLoggedUser(Principal principal) {
-        return userService.getUserByEmail(principal.getName());
-    }
-
-    @GetMapping("/email")
-    public int getUserCountByEmail(@RequestParam("email") String email) {
-        return userService.getUserCountByEmail(email);
-    }
-
-    @GetMapping("/{userId}/cars")
-    public ContentDto<CarDto> getUserCars(@PathVariable("userId") String userId) {
-        return carService.getUserCars(userId);
-    }
-
-    @DeleteMapping("/{userId}/delete-car/{carId}")
-    public ResponseEntity<ResponseDto> deleteCar(
-            @PathVariable("userId") String userId, @PathVariable("carId") String carId) {
-        carService.deleteCar(Integer.parseInt(userId), Integer.parseInt(carId));
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/{userId}/reservations")
-    public ContentDto<ReservationDto> getUserReservations(@PathVariable("userId") String userId) {
-        return reservationService.getUserReservations(userId);
-    }
+  @GetMapping("/{userId}/reservations")
+  public ContentDto<ReservationDto> getUserReservations(@PathVariable("userId") String userId) {
+    return reservationService.getUserReservations(userId);
+  }
 }
-
