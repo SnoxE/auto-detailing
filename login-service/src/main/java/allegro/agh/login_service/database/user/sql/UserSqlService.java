@@ -1,10 +1,12 @@
 package allegro.agh.login_service.database.user.sql;
 
-import allegro.agh.login_service.common.exceptions.AuthException;
+import allegro.agh.login_service.common.problem.AuthProblem;
+import allegro.agh.login_service.common.problem.InternalServerErrorProblem;
 import allegro.agh.login_service.database.user.dto.UserDto;
 import allegro.agh.login_service.database.user.sql.model.UserSqlRow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
@@ -34,8 +36,6 @@ public class UserSqlService {
             readSqlQuery("sql/user/select_user_by_email_and_password.sql");
     private static final String SELECT_PASSWORD_BY_ID =
             readSqlQuery("sql/user/select_user_password_by_id.sql");
-//    private static final String UPDATE_PASSWORD_BY_ID =
-//            readSqlQuery("sql/update/update_user_password.sql");
 
     private final JdbcOperations jdbcOperations;
     private final PasswordEncoder passwordEncoder;
@@ -64,6 +64,7 @@ public class UserSqlService {
             statement.setNull(++parameterIndex, JDBCType.VARCHAR.getVendorTypeNumber());
         statement.setString(++parameterIndex, email);
         statement.setString(++parameterIndex, passwordEncoder.encode(password));
+//        statement.setString(++parameterIndex, phoneNumber);
         if (role != null)
             statement.setString(++parameterIndex, role.toUpperCase());
         else
@@ -92,7 +93,7 @@ public class UserSqlService {
             String email,
             String phoneNumber,
             String password,
-            String role) throws AuthException {
+            String role) throws AuthProblem {
         try {
             return jdbcOperations.update(con -> preparedInsertIntoUsersQuery(
                     con,
@@ -102,12 +103,13 @@ public class UserSqlService {
                     phoneNumber,
                     password,
                     role));
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        } catch (DataAccessException e) {
+            log.error("Unable to create user due to an unexpected error message={}", e.getMessage(), e);
+            throw new InternalServerErrorProblem();
         }
     }
 
-    public UserDto getUserByEmailAndPassword(String email, String password) throws AuthException {
+    public UserDto getUserByEmailAndPassword(String email, String password) throws AuthProblem {
         return jdbcOperations.queryForObject(
                 SELECT_USER_BY_EMAIL_AND_PASSWORD,
                 userRowMapper,

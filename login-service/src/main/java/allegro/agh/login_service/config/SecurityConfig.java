@@ -76,6 +76,7 @@ public class SecurityConfig {
                                         "/api/token",
                                         "/api/users/register",
                                         "/api/users/email",
+                                        "/api/users/problem",
                                         "/api/services/**",
                                         "/swagger-ui/**",
                                         "/v3/**")
