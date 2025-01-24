@@ -1,7 +1,6 @@
 package allegro.agh.login_service.controller;
 
 import allegro.agh.login_service.common.ResponseDto;
-import allegro.agh.login_service.common.problem.DuplicateKeyErrorProblem;
 import allegro.agh.login_service.common.problem.InternalServerErrorProblem;
 import allegro.agh.login_service.database.user.dto.UserDto;
 import allegro.agh.login_service.service.UserService;

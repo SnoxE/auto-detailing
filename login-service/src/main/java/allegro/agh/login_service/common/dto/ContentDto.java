@@ -6,4 +6,3 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public record ContentDto<T>(@JsonProperty("content") @Valid List<@NotNull T> content) {}
-
