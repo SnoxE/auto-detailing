@@ -83,8 +83,6 @@ public class UserController {
   //    return userService.getUserByEmail(principal.getName());
   //  }
 
-
-
   //    @GetMapping("/{userId}/cars")
   //    public ContentDto<CarDto>
   // getUserCars(@org.springframework.web.bind.annotation.PathVariable("userId") String userId) {
