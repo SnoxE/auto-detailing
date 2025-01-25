@@ -22,7 +22,12 @@ public class UserController {
 
   //  EmailService emailService;
 
-  public UserController() {}
+  public UserController(
+      UserService userService, CarService carService, ReservationService reservationService) {
+    this.userService = userService;
+    this.carService = carService;
+    this.reservationService = reservationService;
+  }
 
   @PostMapping("/{userId}/add-car")
   public ResponseEntity<ResponseDto> addCar(

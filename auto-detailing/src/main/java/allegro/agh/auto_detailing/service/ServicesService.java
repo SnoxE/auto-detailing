@@ -50,7 +50,7 @@ public class ServicesService {
         serviceSqlRow.name(),
         serviceSqlRow.price(),
         serviceSqlRow.length(),
-        serviceSqlRow.car_size());
+        serviceSqlRow.size());
   }
 
   private static ServiceNamesDto serviceNamesDtoMapper(ServiceNamesSqlRow servicesSqlRow) {

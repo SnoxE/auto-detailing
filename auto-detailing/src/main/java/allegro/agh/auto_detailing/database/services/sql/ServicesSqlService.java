@@ -3,6 +3,7 @@ package allegro.agh.auto_detailing.database.services.sql;
 import static allegro.agh.auto_detailing.common.resource.ResourceManager.readSqlQuery;
 import static allegro.agh.auto_detailing.database.services.sql.ServiceSqlRow.ServiceNamesSqlRow;
 
+import allegro.agh.auto_detailing.common.problem.InternalServerErrorProblem;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -64,7 +65,7 @@ public class ServicesSqlService {
                 serviceName,
                 e.getMessage(),
                 e);
-            throw new RuntimeException(e);
+            throw new InternalServerErrorProblem();
           }
         });
   }
@@ -111,7 +112,7 @@ public class ServicesSqlService {
         resultSet.getString(ServiceSqlRow.NAME),
         resultSet.getInt(ServiceSqlRow.PRICE),
         resultSet.getTime(ServiceSqlRow.LENGTH),
-        resultSet.getString(ServiceSqlRow.CAR_SIZE));
+        resultSet.getString(ServiceSqlRow.SIZE));
   }
 
   private ServiceNamesSqlRow extractServiceNamesRow(ResultSet resultSet)

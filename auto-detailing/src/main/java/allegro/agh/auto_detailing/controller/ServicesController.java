@@ -13,6 +13,10 @@ public class ServicesController {
 
   ServicesService servicesService;
 
+  public ServicesController(ServicesService servicesService) {
+    this.servicesService = servicesService;
+  }
+
   @GetMapping()
   public ContentDto<ServiceNamesDto> getServiceNames() {
     return servicesService.getServiceNames();
