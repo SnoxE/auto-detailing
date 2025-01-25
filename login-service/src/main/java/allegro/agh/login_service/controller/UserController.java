@@ -40,7 +40,6 @@ public class UserController {
             userDto.firstName(),
             userDto.lastName(),
             userDto.email(),
-            userDto.phoneNumber(),
             userDto.password(),
             userDto.role());
 

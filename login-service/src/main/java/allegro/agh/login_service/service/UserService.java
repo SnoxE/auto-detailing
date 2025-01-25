@@ -27,7 +27,6 @@ public class UserService {
       String firstName,
       String lastName,
       String email,
-      String phoneNumber,
       String password,
       String role)
       throws ResourceException {
@@ -48,7 +47,7 @@ public class UserService {
       throw new DuplicateKeyErrorProblem();
     }
 
-    userSqlService.createUser(firstName, lastName, email, phoneNumber, password, role);
+    userSqlService.createUser(firstName, lastName, email, password, role);
 
     return userSqlService.getUserByEmail(email);
   }

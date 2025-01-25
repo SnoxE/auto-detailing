@@ -47,7 +47,6 @@ public class UserSqlService {
       String firstName,
       String lastName,
       String email,
-      String phoneNumber,
       String password,
       String role)
       throws SQLException {
@@ -61,7 +60,6 @@ public class UserSqlService {
     statement.setString(++parameterIndex, email);
 
     statement.setString(++parameterIndex, passwordEncoder.encode(password));
-    //        statement.setString(++parameterIndex, phoneNumber);
     if (role != null) statement.setString(++parameterIndex, role.toUpperCase());
     else statement.setString(++parameterIndex, "USER");
 
@@ -86,7 +84,6 @@ public class UserSqlService {
       String firstName,
       String lastName,
       String email,
-      String phoneNumber,
       String password,
       String role)
       throws AuthProblem {
@@ -94,7 +91,7 @@ public class UserSqlService {
       return jdbcOperations.update(
           con ->
               preparedInsertIntoUsersQuery(
-                  con, firstName, lastName, email, phoneNumber, password, role));
+                  con, firstName, lastName, email, password, role));
     } catch (DataAccessException e) {
       log.error("Unable to create user due to an unexpected error message={}", e.getMessage(), e);
       throw new InternalServerErrorProblem();
@@ -140,7 +137,6 @@ public class UserSqlService {
             resultSet.getString(UserSqlRow.FIRST_NAME),
             resultSet.getString(UserSqlRow.LAST_NAME),
             resultSet.getString(UserSqlRow.EMAIL),
-            resultSet.getString(UserSqlRow.PHONE_NUMBER),
             resultSet.getString(UserSqlRow.PASSWORD),
             resultSet.getString(UserSqlRow.ROLE));
       });
