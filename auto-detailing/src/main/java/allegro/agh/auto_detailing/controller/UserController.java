@@ -25,27 +25,7 @@ public class UserController {
   ReservationService reservationService;
   EmailService emailService;
 
-  private final PasswordEncoder passwordEncoder;
-
-  public UserController(PasswordEncoder passwordEncoder) {
-    this.passwordEncoder = passwordEncoder;
-  }
-
-  @PostMapping("/register")
-  public ResponseEntity<ResponseDto> registerUser(@RequestBody UserDto userDto) {
-    UserDto user =
-        userService.registerUser(
-            userDto.firstName(),
-            userDto.lastName(),
-            userDto.email(),
-            userDto.phoneNumber(),
-            userDto.password(),
-            userDto.role());
-
-    emailService.sendRegisterConfirmationEmail(userDto);
-
-    return ResponseEntity.ok().build();
-  }
+  public UserController() {}
 
   @PostMapping("/{userId}/add-car")
   public ResponseEntity<ResponseDto> addCar(
@@ -57,22 +37,6 @@ public class UserController {
         carDto.productionYear(),
         carDto.size(),
         carDto.colour());
-
-    return ResponseEntity.ok().build();
-  }
-
-  @PutMapping("/{userId}/change-password")
-  public ResponseEntity<ResponseDto> changePassword(
-      @PathVariable("userId") String userId, @RequestBody PasswordDto passwordDto) {
-    String oldPassword = userService.getPasswordByUserId(Integer.parseInt(userId));
-    if (!Objects.equals(oldPassword, passwordEncoder.encode(passwordDto.oldPassword()))) {
-      return ResponseEntity.badRequest().build();
-    } else if (Objects.equals(oldPassword, passwordEncoder.encode(passwordDto.newPassword()))) {
-      return ResponseEntity.badRequest().build();
-    } else {
-      userService.changePassword(
-          Integer.parseInt(userId), passwordEncoder.encode(passwordDto.newPassword()));
-    }
 
     return ResponseEntity.ok().build();
   }
