@@ -15,20 +15,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AuthController.class);
-    private final TokenService tokenService;
-    private final AuthenticationManager authenticationManager;
+  private static final Logger LOG = LoggerFactory.getLogger(AuthController.class);
+  private final TokenService tokenService;
+  private final AuthenticationManager authenticationManager;
 
-    public AuthController(TokenService tokenService, AuthenticationManager authenticationManager) {
-        this.tokenService = tokenService;
-        this.authenticationManager = authenticationManager;
-    }
+  public AuthController(TokenService tokenService, AuthenticationManager authenticationManager) {
+    this.tokenService = tokenService;
+    this.authenticationManager = authenticationManager;
+  }
 
-    @PostMapping("/api/token")
-    public LoginMessage token(@RequestBody LoginRequest userLogin) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userLogin.email(), userLogin.password()));
+  @PostMapping("/api/token")
+  public LoginMessage token(@RequestBody LoginRequest userLogin) {
+    Authentication authentication =
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(userLogin.email(), userLogin.password()));
 
-        return new LoginMessage(tokenService.generateToken(authentication));
-    }
+    return new LoginMessage(tokenService.generateToken(authentication));
+  }
 }

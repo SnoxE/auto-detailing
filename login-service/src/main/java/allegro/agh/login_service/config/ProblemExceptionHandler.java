@@ -1,5 +1,7 @@
 package allegro.agh.login_service.config;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -9,9 +11,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.zalando.problem.AbstractThrowableProblem;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @RestControllerAdvice
 public class ProblemExceptionHandler extends ResponseEntityExceptionHandler {
@@ -27,7 +26,8 @@ public class ProblemExceptionHandler extends ResponseEntityExceptionHandler {
     putIfNotNull(body, "instance", ex.getInstance());
     putIfNotNull(body, "parameters", ex.getParameters());
 
-    HttpStatusCode status = ex.getStatus() == null
+    HttpStatusCode status =
+        ex.getStatus() == null
             ? HttpStatus.INTERNAL_SERVER_ERROR
             : HttpStatus.valueOf(ex.getStatus().getStatusCode());
 
