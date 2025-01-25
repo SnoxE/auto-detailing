@@ -20,5 +20,11 @@ jobs:
           distribution: 'liberica'
           java-version: '21'
 
-      - name: Verify formatting with Spotless
+      - name: Verify google-java-format in login-service
+        working-directory: login-service
         run: ./gradlew spotlessCheck
+      
+      - name: Verify google-java-format in auto-detailing
+        run: |
+          cd auto-detailing
+          ./gradlew spotlessCheck
