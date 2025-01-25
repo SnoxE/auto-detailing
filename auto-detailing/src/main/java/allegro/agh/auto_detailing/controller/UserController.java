@@ -6,7 +6,6 @@ import allegro.agh.auto_detailing.database.car.CarDto;
 import allegro.agh.auto_detailing.database.reservations.dto.ReservationDto;
 import allegro.agh.auto_detailing.database.user.dto.UserDto;
 import allegro.agh.auto_detailing.service.CarService;
-import allegro.agh.auto_detailing.service.EmailService;
 import allegro.agh.auto_detailing.service.ReservationService;
 import allegro.agh.auto_detailing.service.UserService;
 import java.security.Principal;
@@ -20,7 +19,8 @@ public class UserController {
   UserService userService;
   CarService carService;
   ReservationService reservationService;
-  EmailService emailService;
+
+  //  EmailService emailService;
 
   public UserController() {}
 
