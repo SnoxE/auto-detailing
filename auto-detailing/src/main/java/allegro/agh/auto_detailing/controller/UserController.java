@@ -4,16 +4,13 @@ import allegro.agh.auto_detailing.common.ResponseDto;
 import allegro.agh.auto_detailing.common.dto.ContentDto;
 import allegro.agh.auto_detailing.database.car.CarDto;
 import allegro.agh.auto_detailing.database.reservations.dto.ReservationDto;
-import allegro.agh.auto_detailing.database.user.dto.PasswordDto;
 import allegro.agh.auto_detailing.database.user.dto.UserDto;
 import allegro.agh.auto_detailing.service.CarService;
 import allegro.agh.auto_detailing.service.EmailService;
 import allegro.agh.auto_detailing.service.ReservationService;
 import allegro.agh.auto_detailing.service.UserService;
 import java.security.Principal;
-import java.util.Objects;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
