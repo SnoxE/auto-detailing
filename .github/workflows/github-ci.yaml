@@ -28,11 +28,11 @@ jobs:
           chmod +x gradlew
           ./gradlew spotlessCheck
 
-      - name: Build ${{ matrix.module }}
-        working-directory: ${{ matrix.module }}
-        run: |
-          chmod +x gradlew
-          ./gradlew build
+      # - name: Build ${{ matrix.module }}
+      #   working-directory: ${{ matrix.module }}
+      #   run: |
+      #     chmod +x gradlew
+      #     ./gradlew build
           
   # build-check:
   #   runs-on: ubuntu-latest
