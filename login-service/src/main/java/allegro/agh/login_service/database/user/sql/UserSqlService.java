@@ -5,17 +5,17 @@ import static allegro.agh.login_service.common.resource.ResourceManager.readSqlQ
 import allegro.agh.login_service.common.problem.AuthProblem;
 import allegro.agh.login_service.common.problem.InternalServerErrorProblem;
 import allegro.agh.login_service.database.user.dto.UserDto;
-import allegro.agh.login_service.database.user.sql.model.UserSqlRow;
-import java.sql.Connection;
-import java.sql.JDBCType;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import allegro.agh.login_service.database.user.sql.model.UserLoginSqlRow;
+import java.util.Map;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.jdbc.core.DataClassRowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,118 +26,87 @@ public class UserSqlService {
   private static final String INSERT_INTO_USERS = readSqlQuery("sql/user/insert_into_users.sql");
   private static final String SELECT_COUNT_BY_EMAIL =
       readSqlQuery("sql/user/select_user_count_by_email.sql");
-  private static final String SELECT_USER_BY_ID = readSqlQuery("sql/user/select_user_by_id.sql");
   private static final String SELECT_USER_BY_EMAIL =
       readSqlQuery("sql/user/select_user_by_email.sql");
-  private static final String SELECT_USER_BY_EMAIL_AND_PASSWORD =
-      readSqlQuery("sql/user/select_user_by_email_and_password.sql");
-  private static final String SELECT_PASSWORD_BY_ID =
-      readSqlQuery("sql/user/select_user_password_by_id.sql");
 
-  private final JdbcOperations jdbcOperations;
-  private final PasswordEncoder passwordEncoder;
+  private final NamedParameterJdbcOperations namedParameterJdbcOperations;
 
-  public UserSqlService(JdbcOperations jdbcOperations, PasswordEncoder passwordEncoder) {
-    this.jdbcOperations = jdbcOperations;
-    this.passwordEncoder = passwordEncoder;
+  public UserSqlService(NamedParameterJdbcOperations namedParameterJdbcOperations) {
+    this.namedParameterJdbcOperations = namedParameterJdbcOperations;
   }
 
-  private PreparedStatement preparedInsertIntoUsersQuery(
-      Connection connection,
-      String firstName,
-      String lastName,
-      String email,
-      String password,
-      String role)
-      throws SQLException {
-    PreparedStatement statement = connection.prepareStatement(INSERT_INTO_USERS);
-
-    int parameterIndex = 0;
-
-    statement.setString(++parameterIndex, firstName);
-    if (lastName != null) statement.setString(++parameterIndex, lastName);
-    else statement.setNull(++parameterIndex, JDBCType.VARCHAR.getVendorTypeNumber());
-    statement.setString(++parameterIndex, email);
-
-    statement.setString(++parameterIndex, passwordEncoder.encode(password));
-    if (role != null) statement.setString(++parameterIndex, role.toUpperCase());
-    else statement.setString(++parameterIndex, "USER");
-
-    return statement;
-  }
-
-  //    private PreparedStatement updatePasswordPreparedStatement(
-  //            Connection connection,
-  //            int userId,
-  //            String password) throws SQLException {
-  //        PreparedStatement statement = connection.prepareStatement(UPDATE_PASSWORD_BY_ID);
-  //
-  //        int parameterIndex = 0;
-  //
-  //        statement.setString(++parameterIndex, password);
-  //        statement.setInt(++parameterIndex, userId);
-  //
-  //        return statement;
-  //    }
-
-  public Integer createUser(
-      String firstName,
-      String lastName,
-      String email,
-      String password,
-      String role)
+  public UserDto createUser(
+      String firstName, String lastName, String email, String password, String role)
       throws AuthProblem {
     try {
-      return jdbcOperations.update(
-          con ->
-              preparedInsertIntoUsersQuery(
-                  con, firstName, lastName, email, password, role));
-    } catch (DataAccessException e) {
+      MapSqlParameterSource parameterSource =
+          insertUserParameterSource(
+              new MapSqlParameterSource(), firstName, lastName, email, password, role);
+      KeyHolder keyHolder = new GeneratedKeyHolder();
+
+      namedParameterJdbcOperations.update(INSERT_INTO_USERS, parameterSource, keyHolder);
+      return mapKeysToUserDto(Objects.requireNonNull(keyHolder.getKeys()));
+    } catch (DataAccessException | NullPointerException e) {
       log.error("Unable to create user due to an unexpected error message={}", e.getMessage(), e);
       throw new InternalServerErrorProblem();
     }
   }
 
-  public UserDto getUserByEmailAndPassword(String email, String password) throws AuthProblem {
-    return jdbcOperations.queryForObject(
-        SELECT_USER_BY_EMAIL_AND_PASSWORD, userRowMapper, UserDto.class, email, password);
-  }
-
   public Integer getCountByEmail(String email) {
-    return jdbcOperations.queryForObject(SELECT_COUNT_BY_EMAIL, Integer.class, email);
+    try {
+      MapSqlParameterSource parameterSource =
+          mapEmailParameterSource(new MapSqlParameterSource(), email);
+      return namedParameterJdbcOperations.queryForObject(
+          SELECT_COUNT_BY_EMAIL, parameterSource, Integer.class);
+    } catch (DataAccessException e) {
+      log.error(
+          "Unable to retrieve user count due to an unexpected error message={}", e.getMessage(), e);
+      throw new InternalServerErrorProblem();
+    }
   }
 
-  //    public void changePassword(int userId, String password) throws ResponseStatusException {
-  //        try {
-  //            jdbcOperations.update(con -> updatePasswordPreparedStatement(
-  //                    con,
-  //                    userId,
-  //                    password));
-  //        } catch (Exception e) {
-  //            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-  //        }
-  //    }
-
-  public UserDto getUserById(int id) {
-    return jdbcOperations.queryForObject(SELECT_USER_BY_ID, userRowMapper, id);
+  public UserLoginSqlRow getUserByEmail(String email) {
+    try {
+      MapSqlParameterSource parameterSource =
+          mapEmailParameterSource(new MapSqlParameterSource(), email);
+      return namedParameterJdbcOperations.queryForObject(
+          SELECT_USER_BY_EMAIL, parameterSource, new DataClassRowMapper<>(UserLoginSqlRow.class));
+    } catch (DataAccessException e) {
+      log.error(
+          "Unable to retrieve user by email due to an unexpected error message={}",
+          e.getMessage(),
+          e);
+      throw new InternalServerErrorProblem();
+    }
   }
 
-  public UserDto getUserByEmail(String email) {
-    return jdbcOperations.queryForObject(SELECT_USER_BY_EMAIL, userRowMapper, email);
+  private MapSqlParameterSource insertUserParameterSource(
+      MapSqlParameterSource parameterSource,
+      String firstName,
+      String lastName,
+      String email,
+      String password,
+      String role) {
+    parameterSource.addValue("first_name", firstName);
+    parameterSource.addValue("last_name", lastName);
+    parameterSource.addValue("email", email);
+    parameterSource.addValue("password", password);
+    parameterSource.addValue("role", role);
+    return parameterSource;
   }
 
-  public String getPasswordByUserId(int userId) {
-    return jdbcOperations.queryForObject(SELECT_PASSWORD_BY_ID, String.class, userId);
+  private UserDto mapKeysToUserDto(Map<String, Object> keys) {
+    int id = (int) keys.get("id");
+    String firstName = keys.get("first_name").toString();
+    String lastName = keys.get("last_name") != null ? keys.get("last_name").toString() : null;
+    String email = keys.get("email").toString();
+    String role = keys.get("role").toString();
+
+    return new UserDto(id, firstName, lastName, email, role);
   }
 
-  private final RowMapper<UserDto> userRowMapper =
-      ((resultSet, rowNum) -> {
-        return new UserDto(
-            resultSet.getInt(UserSqlRow.ID),
-            resultSet.getString(UserSqlRow.FIRST_NAME),
-            resultSet.getString(UserSqlRow.LAST_NAME),
-            resultSet.getString(UserSqlRow.EMAIL),
-            resultSet.getString(UserSqlRow.PASSWORD),
-            resultSet.getString(UserSqlRow.ROLE));
-      });
+  private MapSqlParameterSource mapEmailParameterSource(
+      MapSqlParameterSource parameterSource, String email) {
+    return parameterSource.addValue("email", email);
+  }
 }

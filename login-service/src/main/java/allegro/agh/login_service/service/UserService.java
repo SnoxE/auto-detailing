@@ -24,11 +24,7 @@ public class UserService {
   }
 
   public UserDto registerUser(
-      String firstName,
-      String lastName,
-      String email,
-      String password,
-      String role)
+      String firstName, String lastName, String email, String password, String role)
       throws ResourceException {
 
     Pattern pattern = Pattern.compile("^(.+)@(.+)$");
@@ -47,21 +43,7 @@ public class UserService {
       throw new DuplicateKeyErrorProblem();
     }
 
-    userSqlService.createUser(firstName, lastName, email, password, role);
-
-    return userSqlService.getUserByEmail(email);
-  }
-
-  public UserDto getUserByEmail(String email) {
-    return userSqlService.getUserByEmail(email);
-  }
-
-  //    public void changePassword(int userId, String password) {
-  //        userSqlService.changePassword(userId, password);
-  //    }
-
-  public String getPasswordByUserId(int userId) {
-    return userSqlService.getPasswordByUserId(userId);
+    return userSqlService.createUser(firstName, lastName, email, password, role);
   }
 
   public int getUserCountByEmail(String email) {

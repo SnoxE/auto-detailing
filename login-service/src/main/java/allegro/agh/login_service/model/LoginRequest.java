@@ -1,3 +1,6 @@
 package allegro.agh.login_service.model;
 
-public record LoginRequest(String email, String password) {}
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public record LoginRequest(
+    @JsonProperty("email") String email, @JsonProperty("password") String password) {}
