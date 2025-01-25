@@ -2,8 +2,8 @@ package allegro.agh.login_service.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-import allegro.agh.login_service.database.user.dto.UserDto;
 import allegro.agh.login_service.database.user.sql.UserSqlService;
+import allegro.agh.login_service.database.user.sql.model.UserLoginSqlRow;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -55,7 +55,7 @@ public class SecurityConfig {
   @Bean
   public UserDetailsService user(UserSqlService userSqlService) {
     return (username) -> {
-      UserDto userDto = userSqlService.getUserByEmail(username);
+      UserLoginSqlRow userDto = userSqlService.getUserByEmail(username);
       if (userDto == null) throw new UsernameNotFoundException("email not found");
       return User.withUsername(userDto.email())
           .password(userDto.password())

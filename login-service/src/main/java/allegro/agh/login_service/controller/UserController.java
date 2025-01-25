@@ -1,11 +1,9 @@
 package allegro.agh.login_service.controller;
 
-import allegro.agh.login_service.common.ResponseDto;
-import allegro.agh.login_service.common.problem.InternalServerErrorProblem;
+import allegro.agh.login_service.database.user.dto.NewUserDto;
 import allegro.agh.login_service.database.user.dto.UserDto;
+import allegro.agh.login_service.service.EmailService;
 import allegro.agh.login_service.service.UserService;
-import java.security.Principal;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,39 +16,34 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
   UserService userService;
+  EmailService emailService;
 
   //    CarService carService;
   //    ReservationService reservationService;
-  //    EmailService emailService;
 
-  //    private final PasswordEncoder passwordEncoder;
-
-  //    public UserController(PasswordEncoder passwordEncoder) {
-  //        this.passwordEncoder = passwordEncoder;
-  //    }
-
-  public UserController(UserService userService) {
+  public UserController(UserService userService, EmailService emailService) {
     this.userService = userService;
+    this.emailService = emailService;
   }
 
   @PostMapping("/register")
-  public ResponseEntity<ResponseDto> registerUser(@RequestBody UserDto userDto) {
+  public UserDto registerUser(@RequestBody NewUserDto newUserDto) {
     UserDto user =
         userService.registerUser(
-            userDto.firstName(),
-            userDto.lastName(),
-            userDto.email(),
-            userDto.password(),
-            userDto.role());
+            newUserDto.firstName(),
+            newUserDto.lastName(),
+            newUserDto.email(),
+            newUserDto.password(),
+            newUserDto.role());
 
-    //        emailService.sendRegisterConfirmationEmail(userDto);
+    emailService.sendRegisterConfirmationEmail(user);
 
-    return ResponseEntity.ok().build();
+    return user;
   }
 
-  @GetMapping("/problem")
-  public void throwProblem() {
-    throw new InternalServerErrorProblem();
+  @GetMapping("/email")
+  public int getUserCountByEmail(@RequestParam("email") String email) {
+    return userService.getUserCountByEmail(email);
   }
 
   //    @PostMapping("/{userId}/add-car")
@@ -85,15 +78,12 @@ public class UserController {
   //        return ResponseEntity.ok().build();
   //    }
 
-  @GetMapping("/user")
-  public UserDto getLoggedUser(Principal principal) {
-    return userService.getUserByEmail(principal.getName());
-  }
+  //  @GetMapping("/user")
+  //  public NewUserDto getLoggedUser(Principal principal) {
+  //    return userService.getUserByEmail(principal.getName());
+  //  }
 
-  @GetMapping("/email")
-  public int getUserCountByEmail(@RequestParam("email") String email) {
-    return userService.getUserCountByEmail(email);
-  }
+
 
   //    @GetMapping("/{userId}/cars")
   //    public ContentDto<CarDto>

@@ -8,5 +8,5 @@ SELECT
 FROM
     users AS u
 WHERE
-    u.email = ?;
+    u.email = :email;
 
