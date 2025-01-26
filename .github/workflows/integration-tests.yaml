@@ -46,7 +46,12 @@ jobs:
         PGPASSWORD=test_password psql -U test_user -h localhost -d test_db -f setup.sql
 
     - name: Run tests
+      working-directory: login-service/integration_tests
       env:
-        DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_db
+        POSTGRES_HOST: localhost
+        POSTGRES_PORT: 5432
+        POSTGRES_DB: test_db
+        POSTGRES_USER: test_user
+        POSTGRES_PASSWORD: test_password
       run: |
-        python -m pytest tests/
+        python -m pytest
