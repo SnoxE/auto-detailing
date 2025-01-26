@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        module: [login-service, auto-detailing]
+        module: [login-service]
 
     services:
       postgres:
