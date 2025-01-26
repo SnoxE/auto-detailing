@@ -20,10 +20,6 @@ jobs:
           distribution: 'liberica'
           java-version: '21'
 
-      - name: Make gradlew executable
-        working-directory: login-service
-        run: chmod +x gradlew
-
       - name: Verify google-java-format in login-service
         working-directory: login-service
         run: ./gradlew spotlessCheck
