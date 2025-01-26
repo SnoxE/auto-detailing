@@ -1,0 +1,34 @@
+name: Spotless Format Check
+
+on:
+  push:
+    branches: ["master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  check-formatting:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'liberica'
+          java-version: '21'
+
+      - name: Make gradlew executable
+        working-directory: login-service
+        run: chmod +x gradlew
+
+      - name: Verify google-java-format in login-service
+        working-directory: login-service
+        run: ./gradlew spotlessCheck
+      
+      - name: Verify google-java-format in auto-detailing
+        run: |
+          cd auto-detailing
+          ./gradlew spotlessCheck
