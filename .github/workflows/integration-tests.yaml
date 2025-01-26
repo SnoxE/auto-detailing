@@ -57,7 +57,7 @@ jobs:
     - name: Initialize database
       working-directory: ${{ matrix.module }}/integration-tests
       run: |
-        PGPASSWORD=test_password psql -U test_user -h localhost -d test_db -f setup.sql
+        PGPASSWORD=test_password psql -U test_user -h localhost -d test_db -f dbsetup.sql
 
     - name: Run tests
       working-directory: ${{ matrix.module }}/integration-tests
