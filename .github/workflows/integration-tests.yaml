@@ -9,6 +9,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        module: [login-service, auto-detailing]
 
     services:
       postgres:
@@ -26,14 +29,12 @@ jobs:
           --health-retries 3
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-      with:
-        path: login-service
+    - uses: actions/checkout@v3
 
-    - name: List login-service directory
-      run: |
-        pwd
+    - name: Debug directory structure
+        run: |
+          pwd
+          ls -la
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -41,18 +42,18 @@ jobs:
         python-version: 3.11
 
     - name: Install dependencies
-      working-directory: integration_tests
+      working-directory: ${{ matrix.module }}/integration_tests
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
     - name: Initialize database
-      working-directory: integration_tests
+      working-directory: ${{ matrix.module }}/integration_tests
       run: |
         PGPASSWORD=test_password psql -U test_user -h localhost -d test_db -f setup.sql
 
     - name: Run tests
-      working-directory: integration_tests
+      working-directory: ${{ matrix.module }}/integration_tests
       env:
         POSTGRES_HOST: localhost
         POSTGRES_PORT: 5432
