@@ -33,8 +33,7 @@ jobs:
 
     - name: Debug directory structure
       run: |
-        pwd
-        cd ../login-service/integration_tests
+        ls
 
     - name: Set up Python
       uses: actions/setup-python@v4
