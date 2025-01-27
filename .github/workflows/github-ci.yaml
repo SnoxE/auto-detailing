@@ -1,4 +1,4 @@
-name: Spotless Format Check
+name: Format Check and Build
 
 on:
   push:

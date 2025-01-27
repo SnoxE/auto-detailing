@@ -1,10 +1,16 @@
 name: Integration Tests
 
+# on:
+#   push:
+#     branches: [ "master" ]
+#   pull_request:
+#     branches: [ "master" ]
+
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+  workflow_run:
+    workflows: ["Format Check and Build"]
+    types:
+      - completed
 
 jobs:
   test:
