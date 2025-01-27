@@ -10,7 +10,7 @@ public record ServiceDto(
     @JsonProperty("length") Time length,
     @JsonProperty("car_size") String carSize) {
 
-    public String getServiceName() {
-        return this.name;
-    }
+  public String getServiceName() {
+    return this.name;
+  }
 }
