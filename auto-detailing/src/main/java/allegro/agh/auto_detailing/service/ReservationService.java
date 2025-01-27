@@ -81,7 +81,7 @@ public class ReservationService {
     return new ContentDto<>(reservationDtoList);
   }
 
-  private static ReservationDto reservationDtoMapper(ReservationSqlRow reservationSqlRow) {
+  public static ReservationDto reservationDtoMapper(ReservationSqlRow reservationSqlRow) {
     return new ReservationDto(
         reservationSqlRow.id(),
         reservationSqlRow.servicesName(),
