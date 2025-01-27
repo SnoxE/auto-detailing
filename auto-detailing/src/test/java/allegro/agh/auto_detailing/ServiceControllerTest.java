@@ -33,7 +33,7 @@ class ServicesControllerTest {
 
     assertNotNull(result);
     assertEquals(1, result.content().size());
-    assertEquals("Cleaning", result.content().get(0).getName());
+    assertEquals("Cleaning", result.content().get(0).name());
 
     verify(servicesService, times(1)).getServiceNames();
   }
@@ -50,7 +50,7 @@ class ServicesControllerTest {
 
     assertNotNull(result);
     assertEquals(1, result.size());
-    assertEquals("Cleaning", result.get(0).getServiceName());
+    assertEquals("Cleaning", result.get(0).name());
     verify(servicesService, times(1)).getServiceByNameAndCarSize("Cleaning", "Small");
   }
 }
