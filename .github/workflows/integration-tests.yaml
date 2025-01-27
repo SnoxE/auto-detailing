@@ -40,6 +40,32 @@ jobs:
       with:
         python-version: 3.11
 
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'liberica'
+        java-version: '21'
+
+    - name: Build ${{ matrix.module }}
+      working-directory: ${{ matrix.module }}
+      run: |
+        chmod +x gradlew
+        ./gradlew build
+
+    - name: Start ${{ matrix.module }} API
+      working-directory: ${{ matrix.module }}
+      run: |
+        nohup ./gradlew bootRun &
+      env:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/test_db
+        SPRING_DATASOURCE_USERNAME: test_user
+        SPRING_DATASOURCE_PASSWORD: test_password
+
+    - name: Wait for API to start
+      run: |
+        echo "Waiting for API to start..."
+        timeout 30s bash -c 'until echo > /dev/tcp/localhost/8081; do sleep 1; done'
+
     # - name: Debug directory structure again
     #   run: |
     #     ls
