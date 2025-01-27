@@ -57,7 +57,7 @@ def gen_user(index):
 
 
 def gen_car(index, user_id):
-    sizes = ['MAŁE', 'ŚREDNIE', 'DUŻE']
+    sizes = ['SMALL', 'MEDIUM', 'LARGE']
 
     return {
         'id': index,

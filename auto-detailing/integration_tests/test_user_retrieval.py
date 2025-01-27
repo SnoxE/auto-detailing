@@ -50,17 +50,17 @@ def test_user_retrieval(users: Users):
     assert_user(body, expected_user)
 
 
-# @pytest.mark.parametrize('user_id', [1])
-# def test_user_cars_retrieval(users_cars: UsersCars, user_id: int):
-#     # given
-#     expected_cars = users_cars.find_cars_by_user_id(user_id)
-#
-#     # when
-#     result = get_cars_by_user_id('email00@email.com', 'password00', user_id)
-#     assert result.status_code == requests.codes.ok
-#     body = result.json()
-#     for actual, expected in zip(body['content'], expected_cars):
-#         assert_car(actual, expected)
+@pytest.mark.parametrize('user_id', [1])
+def test_user_cars_retrieval(users_cars: UsersCars, user_id: int):
+    # given
+    expected_cars = users_cars.find_cars_by_user_id(user_id)
+
+    # when
+    result = get_cars_by_user_id('email00@email.com', 'password00', user_id)
+    assert result.status_code == requests.codes.ok
+    body = result.json()
+    for actual, expected in zip(body['content'], expected_cars):
+        assert_car(actual, expected)
 
 
 def assert_user(actual_user: Dict[str, Any], expected_user: Dict[str, Any]):
