@@ -34,10 +34,14 @@ class ServicesControllerTest {
     assertNotNull(result);
     assertEquals(1, result.content().size());
 <<<<<<< HEAD
+<<<<<<< HEAD
     assertEquals("Cleaning", result.content().get(0).name());
 =======
     assertEquals("Cleaning", result.content().get(0).getName());
 >>>>>>> fffabcd (Fix)
+=======
+    assertEquals("Cleaning", result.content().get(0).name());
+>>>>>>> 021646f (Deleting getters from ServceDto & ServiceNamesDto)
 
     verify(servicesService, times(1)).getServiceNames();
   }
@@ -55,10 +59,14 @@ class ServicesControllerTest {
     assertNotNull(result);
     assertEquals(1, result.size());
 <<<<<<< HEAD
+<<<<<<< HEAD
     assertEquals("Cleaning", result.get(0).name());
 =======
     assertEquals("Cleaning", result.get(0).getServiceName());
 >>>>>>> fffabcd (Fix)
+=======
+    assertEquals("Cleaning", result.get(0).name());
+>>>>>>> 021646f (Deleting getters from ServceDto & ServiceNamesDto)
     verify(servicesService, times(1)).getServiceByNameAndCarSize("Cleaning", "Small");
   }
 }
