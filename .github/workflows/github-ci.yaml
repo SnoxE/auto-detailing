@@ -52,6 +52,12 @@ jobs:
         working-directory: ${{ matrix.module }}
         run: ./gradlew build
 
+      - name: Upload Artifact for ${{ matrix.module }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.module }}-artifact
+          path: ${{ matrix.module }}/build/libs/*.jar
+
       - name: Start login-service API
         working-directory: login-service
         run: |
