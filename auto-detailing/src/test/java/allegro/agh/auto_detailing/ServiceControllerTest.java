@@ -1,15 +1,10 @@
 package allegro.agh.auto_detailing;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import allegro.agh.auto_detailing.common.dto.ContentDto;
 import allegro.agh.auto_detailing.controller.ServicesController;
 import allegro.agh.auto_detailing.database.services.ServiceDto;
 import allegro.agh.auto_detailing.database.services.ServiceNamesDto;
 import allegro.agh.auto_detailing.service.ServicesService;
-import java.sql.Time;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
