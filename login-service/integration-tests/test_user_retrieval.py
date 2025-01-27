@@ -15,7 +15,7 @@ from user.user_client import get_user, get_cars_by_user_id
 def postgres():
     client = PostgresClient(
         host=os.getenv("POSTGRES_HOST", "localhost"),
-        port=os.getenv("POSTGRES_PORT", "5433"),
+        port=os.getenv("POSTGRES_PORT", "5434"),
         database_name=os.getenv("POSTGRES_DB", "postgres"),
         schema_name=os.getenv("POSTGRES_SCHEMA", "public"),
         user=os.getenv("POSTGRES_USER", "postgres"),
@@ -66,7 +66,7 @@ def test_user_retrieval(users: Users):
 def assert_user(actual_user: Dict[str, Any], expected_user: Dict[str, Any]):
     assert actual_user['first_name'] == expected_user['first_name']
     assert actual_user['last_name'] == expected_user['last_name']
-    assert actual_user['phone_number'] == expected_user['phone_number']
+    assert actual_user['email'] == expected_user['email']
     assert actual_user['role'] == expected_user['role']
 
 

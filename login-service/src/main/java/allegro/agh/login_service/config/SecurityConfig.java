@@ -55,10 +55,10 @@ public class SecurityConfig {
   @Bean
   public UserDetailsService user(UserSqlService userSqlService) {
     return (username) -> {
-      UserLoginSqlRow userDto = userSqlService.getUserByEmail(username);
-      if (userDto == null) throw new UsernameNotFoundException("email not found");
-      return User.withUsername(userDto.email())
-          .password(userDto.password())
+      UserLoginSqlRow userLoginSqlRow = userSqlService.getUserByEmail(username);
+      if (userLoginSqlRow == null) throw new UsernameNotFoundException("email not found");
+      return User.withUsername(userLoginSqlRow.email())
+          .password(userLoginSqlRow.password())
           .authorities("read")
           .build();
     };

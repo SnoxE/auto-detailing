@@ -25,8 +25,6 @@ public class UserSqlService {
       readSqlQuery("sql/select/user/select_user_count_by_email.sql");
   private static final String SELECT_USER_BY_ID =
       readSqlQuery("sql/select/user/select_user_by_id.sql");
-  private static final String SELECT_USER_BY_EMAIL =
-      readSqlQuery("sql/select/user/select_user_by_email.sql");
   private static final String SELECT_USER_BY_EMAIL_AND_PASSWORD =
       readSqlQuery("sql/select/user/select_user_by_email_and_password.sql");
   private static final String SELECT_PASSWORD_BY_ID =
@@ -71,10 +69,6 @@ public class UserSqlService {
 
   public UserDto getUserById(int id) {
     return jdbcOperations.queryForObject(SELECT_USER_BY_ID, userRowMapper, id);
-  }
-
-  public UserDto getUserByEmail(String email) {
-    return jdbcOperations.queryForObject(SELECT_USER_BY_EMAIL, userRowMapper, email);
   }
 
   public String getPasswordByUserId(int userId) {

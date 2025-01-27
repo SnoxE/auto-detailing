@@ -17,13 +17,13 @@ jobs:
       postgres:
         image: postgres:13
         ports:
-          - 5432:5432
+          - 5434:5432
         env:
-          POSTGRES_USER: test_user
-          POSTGRES_PASSWORD: test_password
-          POSTGRES_DB: test_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: postgres
         options: >-
-          --health-cmd "pg_isready -U test_user" 
+          --health-cmd "pg_isready -U postgres" 
           --health-interval 10s 
           --health-timeout 5s 
           --health-retries 3
@@ -57,9 +57,9 @@ jobs:
       run: |
         nohup ./gradlew bootRun &
       env:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/test_db
-        SPRING_DATASOURCE_USERNAME: test_user
-        SPRING_DATASOURCE_PASSWORD: test_password
+        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5434/postgres
+        SPRING_DATASOURCE_USERNAME: postgres
+        SPRING_DATASOURCE_PASSWORD: password
 
     - name: Wait for API to start
       run: |
@@ -83,15 +83,15 @@ jobs:
     - name: Initialize database
       working-directory: ${{ matrix.module }}/integration-tests
       run: |
-        PGPASSWORD=test_password psql -U test_user -h localhost -d test_db -f dbsetup.sql
+        PGPASSWORD=password psql -U postgres -h localhost -d postgres -f dbsetup.sql
 
     - name: Run tests
       working-directory: ${{ matrix.module }}/integration-tests
       env:
         POSTGRES_HOST: localhost
-        POSTGRES_PORT: 5432
-        POSTGRES_DB: test_db
-        POSTGRES_USER: test_user
-        POSTGRES_PASSWORD: test_password
+        POSTGRES_PORT: 5434
+        POSTGRES_DB: postgres
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: password
       run: |
         python -m pytest

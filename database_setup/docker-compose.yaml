@@ -10,6 +10,21 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  test_db:
+    container_name: test_postgres
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - test_pgdata:/var/lib/postgresql/data
+
 volumes:
   pgdata:
+    external: true
+  test_pgdata:
     external: true
