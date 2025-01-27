@@ -8,5 +8,4 @@ public record ServiceDto(
     @JsonProperty("name") String name,
     @JsonProperty("price") int price,
     @JsonProperty("length") Time length,
-    @JsonProperty("car_size") String carSize) {
-}
+    @JsonProperty("car_size") String carSize) {}
