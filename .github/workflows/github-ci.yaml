@@ -55,6 +55,7 @@ jobs:
       - name: Start login-service API
         working-directory: login-service
         run: |
+          chmod +x gradlew
           nohup ./gradlew bootRun &
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5434/postgres
@@ -64,6 +65,7 @@ jobs:
       - name: Start auto-detailing API
         working-directory: auto-detailing
         run: |
+          chmod +x gradlew
           nohup ./gradlew bootRun &
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5434/postgres
