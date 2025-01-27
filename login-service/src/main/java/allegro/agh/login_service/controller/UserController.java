@@ -67,24 +67,6 @@ public class UserController {
   //        return ResponseEntity.ok().build();
   //    }
 
-  //    @PutMapping("/{userId}/change-password")
-  //    public ResponseEntity<ResponseDto> changePassword(
-  //            @PathVariable("userId") String userId, @RequestBody PasswordDto passwordDto) {
-  //        String oldPassword = userService.getPasswordByUserId(Integer.parseInt(userId));
-  //        if (!Objects.equals(oldPassword, passwordEncoder.encode(passwordDto.oldPassword()))) {
-  //            return ResponseEntity.badRequest().build();
-  //        } else if (Objects.equals(oldPassword,
-  // passwordEncoder.encode(passwordDto.newPassword()))) {
-  //            return ResponseEntity.badRequest().build();
-  //        } else {
-  //            userService.changePassword(
-  //                    Integer.parseInt(userId),
-  // passwordEncoder.encode(passwordDto.newPassword()));
-  //        }
-  //
-  //        return ResponseEntity.ok().build();
-  //    }
-
   @GetMapping("/user")
   public UserDto getLoggedUser(Principal principal) {
     return userService.getUserByEmail(principal.getName());

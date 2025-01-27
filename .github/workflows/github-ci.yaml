@@ -13,6 +13,21 @@ jobs:
       matrix:
         module: [login-service, auto-detailing]
 
+    services:
+      postgres:
+        image: postgres:13
+        ports:
+          - 5434:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: postgres
+        options: >-
+          --health-cmd "pg_isready -U postgres" 
+          --health-interval 10s 
+          --health-timeout 5s 
+          --health-retries 3
+
     steps:
       - uses: actions/checkout@v3
 
@@ -21,6 +36,11 @@ jobs:
         with:
           distribution: 'liberica'
           java-version: '21'
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
 
       - name: Run spotlessCheck in ${{ matrix.module }}
         working-directory: ${{ matrix.module }}
@@ -31,4 +51,50 @@ jobs:
       - name: Build ${{ matrix.module }}
         working-directory: ${{ matrix.module }}
         run: ./gradlew build
+
+      - name: Start login-service API
+        working-directory: login-service
+        run: |
+          nohup ./gradlew bootRun &
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5434/postgres
+          SPRING_DATASOURCE_USERNAME: postgres
+          SPRING_DATASOURCE_PASSWORD: password
+
+      - name: Start auto-detailing API
+        working-directory: auto-detailing
+        run: |
+          nohup ./gradlew bootRun &
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5434/postgres
+          SPRING_DATASOURCE_USERNAME: postgres
+          SPRING_DATASOURCE_PASSWORD: password
+      
+      - name: Wait for API to start
+      run: |
+        echo "Waiting for API to start..."
+        timeout 30s bash -c 'until echo > /dev/tcp/localhost/8081; do sleep 1; done'
+        timeout 30s bash -c 'until echo > /dev/tcp/localhost/8080; do sleep 1; done'
+
+      - name: Install dependencies
+        working-directory: auto-detailing/integration-tests
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Initialize database
+        working-directory: auto-detailing/integration-tests
+        run: |
+          PGPASSWORD=password psql -U postgres -h localhost -p 5434 -d postgres -f dbsetup.sql
+
+      - name: Run tests
+        working-directory: auto-detailing/integration-tests
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5434
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+        run: |
+          python -m pytest
           
