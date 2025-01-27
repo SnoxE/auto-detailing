@@ -1,0 +1,33 @@
+# name: Format Check and Build
+
+# on:
+#   push:
+#     branches: [ "master" ]
+#   pull_request:
+#     branches: [ "master" ]
+
+# jobs:
+#   check-formatting-and-build:
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         module: [login-service, auto-detailing]
+
+#     steps:
+#       - uses: actions/checkout@v3
+
+#       - name: Set up JDK
+#         uses: actions/setup-java@v3
+#         with:
+#           distribution: 'liberica'
+#           java-version: '21'
+
+#       - name: Run spotlessCheck in ${{ matrix.module }}
+#         working-directory: ${{ matrix.module }}
+#         run: |
+#           chmod +x gradlew
+#           ./gradlew spotlessCheck
+
+#       - name: Build ${{ matrix.module }}
+#         working-directory: ${{ matrix.module }}
+#         run: ./gradlew build
