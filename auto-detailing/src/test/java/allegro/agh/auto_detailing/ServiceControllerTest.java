@@ -38,6 +38,7 @@ class ServicesControllerTest {
 
     assertNotNull(result);
     assertEquals(1, result.content().size());
+
     assertEquals("Cleaning", result.content().getFirst().name());
 
     verify(servicesService, times(1)).getServiceNames();
@@ -51,7 +52,8 @@ class ServicesControllerTest {
     List<ServiceDto> result = servicesController.getServiceId("Cleaning", "Small");
     assertNotNull(result);
     assertEquals(1, result.size());
-    assertEquals("Cleaning", result.getFirst().getServiceName());
+
+    assertEquals("Cleaning", result.getFirst().name());
     verify(servicesService, times(1)).getServiceByNameAndCarSize("Cleaning", "Small");
   }
 }
