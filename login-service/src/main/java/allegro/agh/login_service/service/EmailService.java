@@ -45,6 +45,5 @@ public class EmailService {
     long beforeDbUpdate = System.currentTimeMillis();
     javaMailSender.send(message);
     log.info("send email time: {} ms", System.currentTimeMillis() - beforeDbUpdate);
-
   }
 }

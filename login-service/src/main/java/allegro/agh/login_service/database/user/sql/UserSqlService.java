@@ -33,7 +33,8 @@ public class UserSqlService {
   private final NamedParameterJdbcOperations namedParameterJdbcOperations;
   private final PasswordEncoder passwordEncoder;
 
-  public UserSqlService(NamedParameterJdbcOperations namedParameterJdbcOperations, PasswordEncoder passwordEncoder) {
+  public UserSqlService(
+      NamedParameterJdbcOperations namedParameterJdbcOperations, PasswordEncoder passwordEncoder) {
     this.namedParameterJdbcOperations = namedParameterJdbcOperations;
     this.passwordEncoder = passwordEncoder;
   }
