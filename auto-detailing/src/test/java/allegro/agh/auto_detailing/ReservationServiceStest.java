@@ -1,7 +1,11 @@
 package allegro.agh.auto_detailing;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import allegro.agh.auto_detailing.common.dto.ContentDto;
 import allegro.agh.auto_detailing.database.reservations.dto.ReservationDto;
