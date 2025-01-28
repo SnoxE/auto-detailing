@@ -5,7 +5,6 @@ import allegro.agh.login_service.common.problem.DuplicateKeyErrorProblem;
 import allegro.agh.login_service.common.resource.ResourceException;
 import allegro.agh.login_service.database.user.dto.UserDto;
 import allegro.agh.login_service.database.user.sql.UserSqlService;
-import allegro.agh.login_service.database.user.sql.model.UserLoginSqlRow;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,15 +48,5 @@ public class UserService {
 
   public int getUserCountByEmail(String email) {
     return userSqlService.getCountByEmail(email);
-  }
-
-  public UserDto getUserByEmail(String email) {
-    UserLoginSqlRow userLoginSqlRow = userSqlService.getUserByEmail(email);
-    return new UserDto(
-        userLoginSqlRow.id(),
-        userLoginSqlRow.firstName(),
-        userLoginSqlRow.lastName(),
-        userLoginSqlRow.email(),
-        userLoginSqlRow.role());
   }
 }

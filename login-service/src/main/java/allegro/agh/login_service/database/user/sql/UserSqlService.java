@@ -16,7 +16,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,12 +30,9 @@ public class UserSqlService {
       readSqlQuery("sql/user/select_user_by_email.sql");
 
   private final NamedParameterJdbcOperations namedParameterJdbcOperations;
-  private final PasswordEncoder passwordEncoder;
 
-  public UserSqlService(
-      NamedParameterJdbcOperations namedParameterJdbcOperations, PasswordEncoder passwordEncoder) {
+  public UserSqlService(NamedParameterJdbcOperations namedParameterJdbcOperations) {
     this.namedParameterJdbcOperations = namedParameterJdbcOperations;
-    this.passwordEncoder = passwordEncoder;
   }
 
   public UserDto createUser(
@@ -46,7 +42,6 @@ public class UserSqlService {
       MapSqlParameterSource parameterSource =
           insertUserParameterSource(
               new MapSqlParameterSource(), firstName, lastName, email, password, role);
-
       KeyHolder keyHolder = new GeneratedKeyHolder();
 
       namedParameterJdbcOperations.update(INSERT_INTO_USERS, parameterSource, keyHolder);
@@ -95,8 +90,7 @@ public class UserSqlService {
     parameterSource.addValue("first_name", firstName);
     parameterSource.addValue("last_name", lastName);
     parameterSource.addValue("email", email);
-    System.out.println();
-    parameterSource.addValue("password", passwordEncoder.encode(password));
+    parameterSource.addValue("password", password);
     parameterSource.addValue("role", role);
     return parameterSource;
   }

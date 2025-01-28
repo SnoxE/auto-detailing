@@ -4,9 +4,11 @@ import allegro.agh.auto_detailing.common.ResponseDto;
 import allegro.agh.auto_detailing.common.dto.ContentDto;
 import allegro.agh.auto_detailing.database.car.CarDto;
 import allegro.agh.auto_detailing.database.reservations.dto.ReservationDto;
+import allegro.agh.auto_detailing.database.user.dto.UserDto;
 import allegro.agh.auto_detailing.service.CarService;
 import allegro.agh.auto_detailing.service.ReservationService;
 import allegro.agh.auto_detailing.service.UserService;
+import java.security.Principal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,8 @@ public class UserController {
   UserService userService;
   CarService carService;
   ReservationService reservationService;
+
+  //  EmailService emailService;
 
   public UserController(
       UserService userService, CarService carService, ReservationService reservationService) {
@@ -37,6 +41,16 @@ public class UserController {
         carDto.colour());
 
     return ResponseEntity.ok().build();
+  }
+
+  @GetMapping("/user")
+  public UserDto getLoggedUser(Principal principal) {
+    return userService.getUserByEmail(principal.getName());
+  }
+
+  @GetMapping("/email")
+  public int getUserCountByEmail(@RequestParam("email") String email) {
+    return userService.getUserCountByEmail(email);
   }
 
   @GetMapping("/{userId}/cars")
