@@ -2,7 +2,6 @@ package allegro.agh.login_service.service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.security.core.Authentication;
@@ -24,11 +23,10 @@ public class TokenService {
   public String generateToken(Authentication authentication) {
     Instant now = Instant.now();
 
-      List<String> roles =
-          authentication.getAuthorities().stream()
-              .map(GrantedAuthority::getAuthority)
-              .collect(Collectors.toList());
-
+    List<String> roles =
+        authentication.getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.toList());
 
     JwtClaimsSet claimsSet =
         JwtClaimsSet.builder()
