@@ -97,7 +97,7 @@ public class UserSqlService {
     parameterSource.addValue("email", email);
     System.out.println();
     parameterSource.addValue("password", passwordEncoder.encode(password));
-    parameterSource.addValue("role", role);
+    parameterSource.addValue("role", role == null ? "USER" : role);
     return parameterSource;
   }
 
