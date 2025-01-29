@@ -9,8 +9,6 @@ import allegro.agh.auto_detailing.common.dto.ContentDto;
 import allegro.agh.auto_detailing.controller.UserController;
 import allegro.agh.auto_detailing.database.car.CarDto;
 import allegro.agh.auto_detailing.service.CarService;
-import allegro.agh.auto_detailing.service.ReservationService;
-import allegro.agh.auto_detailing.service.UserService;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,11 +20,7 @@ import org.springframework.http.ResponseEntity;
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
 
-  @Mock private UserService userService;
-
   @Mock private CarService carService;
-
-  @Mock private ReservationService reservationService;
 
   @InjectMocks private UserController userController;
 

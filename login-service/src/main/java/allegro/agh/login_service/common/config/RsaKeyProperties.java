@@ -1,4 +1,4 @@
-package allegro.agh.login_service.config;
+package allegro.agh.login_service.common.config;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;

@@ -1,4 +1,4 @@
-package allegro.agh.login_service.config;
+package allegro.agh.login_service.common.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -59,7 +59,7 @@ public class SecurityConfig {
       if (userLoginSqlRow == null) throw new UsernameNotFoundException("email not found");
       return User.withUsername(userLoginSqlRow.email())
           .password(userLoginSqlRow.password())
-          .authorities("read")
+          .roles(userLoginSqlRow.role())
           .build();
     };
   }

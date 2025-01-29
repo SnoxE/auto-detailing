@@ -3,6 +3,7 @@ package allegro.agh.auto_detailing.database.car.sql;
 import static allegro.agh.auto_detailing.common.resource.ResourceManager.readSqlQuery;
 
 import allegro.agh.auto_detailing.common.exceptions.DgAuthException;
+import allegro.agh.auto_detailing.common.problem.InternalServerErrorProblem;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,6 +12,7 @@ import java.sql.SQLException;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.stereotype.Service;
@@ -85,8 +87,9 @@ public class CarSqlService {
       return jdbcOperations.update(
           con ->
               preparedInsertIntoCarsQuery(con, userId, make, model, productionYear, size, colour));
-    } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    } catch (DataAccessException | NullPointerException e) {
+      log.error("Unable to create user due to an unexpected error message={}", e.getMessage(), e);
+      throw new InternalServerErrorProblem();
     }
   }
 

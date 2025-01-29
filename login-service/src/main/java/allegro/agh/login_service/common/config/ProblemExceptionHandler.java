@@ -1,4 +1,4 @@
-package allegro.agh.login_service.config;
+package allegro.agh.login_service.common.config;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
