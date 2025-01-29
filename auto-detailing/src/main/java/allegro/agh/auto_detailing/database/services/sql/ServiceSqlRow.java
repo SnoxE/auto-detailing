@@ -12,5 +12,5 @@ public record ServiceSqlRow(int id, String name, int price, Time length, String 
   public static final String NAME = "name";
   public static final String PRICE = "price";
   public static final String LENGTH = "length";
-  public static final String SIZE = "size";
+  public static final String SIZE = "car_size";
 }

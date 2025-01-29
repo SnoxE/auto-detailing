@@ -8,13 +8,12 @@ import allegro.agh.auto_detailing.database.services.ServiceNamesDto;
 import allegro.agh.auto_detailing.database.services.sql.ServiceSqlRow;
 import allegro.agh.auto_detailing.database.services.sql.ServicesSqlService;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ServicesService {
 
-  @Autowired ServicesSqlService servicesSqlService;
+  private final ServicesSqlService servicesSqlService;
 
   public ServicesService(ServicesSqlService servicesSqlService) {
     this.servicesSqlService = servicesSqlService;

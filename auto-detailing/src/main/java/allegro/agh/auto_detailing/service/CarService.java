@@ -6,7 +6,6 @@ import allegro.agh.auto_detailing.database.car.CarDto;
 import allegro.agh.auto_detailing.database.car.sql.CarSqlRow;
 import allegro.agh.auto_detailing.database.car.sql.CarSqlService;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,10 +13,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class CarService {
 
-  @Autowired private final CarSqlService carSqlService;
+  private final CarSqlService carSqlService;
 
   public CarService(CarSqlService carSqlService) {
     this.carSqlService = carSqlService;
+  }
+
+  private static CarDto carDtoMapper(CarSqlRow carSqlRow) {
+    return new CarDto(
+        String.valueOf(carSqlRow.id()),
+        carSqlRow.make(),
+        carSqlRow.model(),
+        carSqlRow.productionYear(),
+        carSqlRow.size(),
+        carSqlRow.colour());
   }
 
   public void addCar(
@@ -36,15 +45,5 @@ public class CarService {
         carSqlService.getCars(userId).stream().map(CarService::carDtoMapper).toList();
 
     return new ContentDto<>(carDtoList);
-  }
-
-  private static CarDto carDtoMapper(CarSqlRow carSqlRow) {
-    return new CarDto(
-        String.valueOf(carSqlRow.id()),
-        carSqlRow.make(),
-        carSqlRow.model(),
-        carSqlRow.productionYear(),
-        carSqlRow.size(),
-        carSqlRow.colour());
   }
 }

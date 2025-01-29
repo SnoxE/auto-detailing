@@ -3,7 +3,7 @@ SELECT
     s.name,
     s.price,
     s.length,
-    s.size
+    s.car_size
 FROM
     services AS s
 WHERE

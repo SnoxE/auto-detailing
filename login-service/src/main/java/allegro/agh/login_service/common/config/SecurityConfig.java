@@ -1,4 +1,4 @@
-package allegro.agh.login_service.config;
+package allegro.agh.login_service.common.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -11,6 +11,7 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -59,7 +60,7 @@ public class SecurityConfig {
       if (userLoginSqlRow == null) throw new UsernameNotFoundException("email not found");
       return User.withUsername(userLoginSqlRow.email())
           .password(userLoginSqlRow.password())
-          .authorities("read")
+          .roles(userLoginSqlRow.role())
           .build();
     };
   }
