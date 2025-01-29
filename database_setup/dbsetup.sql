@@ -1,4 +1,4 @@
-CREATE TYPE public.car_size AS ENUM ('MAŁE', 'ŚREDNIE', 'DUŹE');
+CREATE TYPE public.car_size AS ENUM ('MAŁE', 'ŚREDNIE', 'DUŻE');
 
 create table users(
 	id integer NOT NULL primary key generated always as identity,
