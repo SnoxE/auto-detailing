@@ -18,7 +18,7 @@ create table cars
     make            varchar(30) NOT NULL,
     model           varchar(30) NOT NULL,
     production_year varchar(10) NOT NULL,
-    car_size        car_size    NOT NULL,
+    size            car_size    NOT NULL,
     colour          varchar(30) NOT NULL
 );
 
@@ -30,10 +30,10 @@ create table services
     name     varchar(50) NOT NULL,
     price    integer     NOT NULL,
     length   TIME        NOT NULL,
-    car_size car_size    NOT NULL
+    size     car_size    NOT NULL
 );
 
-INSERT INTO services(name, price, length, car_size)
+INSERT INTO services(name, price, length, size)
 VALUES ('Mycie Ręczne', 100, '01:00:00', 'MAŁE'),
        ('Mycie Ręczne', 120, '01:15:00', 'ŚREDNIE'),
        ('Mycie Ręczne', 140, '01:30:00', 'DUŻE'),
