@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ReservationService {
 
-  @Autowired private final AddReservationSqlService addReservationSqlService;
-  @Autowired private final ReservationSqlService reservationSqlService;
+  private final AddReservationSqlService addReservationSqlService;
+  private final ReservationSqlService reservationSqlService;
 
   public ReservationService(
       AddReservationSqlService addReservationSqlService,
